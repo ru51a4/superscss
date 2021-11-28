@@ -23,10 +23,16 @@
     </div>
     <div class="row mt-5">
         <div class="col-6">
-            <textarea id="scss" class="form-control" rows="20" aria-label="scss">$font-stack:    Helvetica, sans-serif;
-$color0: #333;
-$color1: $color0;
-$primary-color: $color1;
+            <textarea id="scss" class="form-control" rows="20" aria-label="scss">
+@mixin border-radius($radius,$radius2) {
+    -webkit-border-radius: $radius;
+       -moz-border-radius: $radius2;
+        -ms-border-radius: $radius;
+         -o-border-radius: $radius;
+            border-radius: $radius;
+  }
+$font-stack:    Helvetica, sans-serif;
+$primary-color: #333;
 $variable: 30px;
 body {
   font: 100% $font-stack;
@@ -34,6 +40,7 @@ body {
   #table {
     display: grid;
     width: $variable + 5px + (10px / 2) * 3;
+    @include border-radius(10px,20px);
   }
 }
             </textarea>
