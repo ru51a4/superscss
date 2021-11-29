@@ -4,7 +4,7 @@
           integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <script src="./lib/math.js"></script>
     <script src="./lib/scss.js"></script>
-<title>scss compiler</title>
+    <title>scss compiler</title>
 </head>
 <body>
 <div class="container">
@@ -24,35 +24,33 @@
     <div class="row mt-5">
         <div class="col-6">
             <textarea id="scss" class="form-control" rows="20" aria-label="scss">
-$font-stack:    Helvetica, sans-serif;
-$primary-color: #333;
-$variable: 30px;
+$data: true;
+    @mixin zebra() {
+            @for $i from 1 through 7 {
 
-@mixin border-radius($radius,$radius2) {
-    -webkit-border-radius: $radius;
-       -moz-border-radius: $radius2;
-        -ms-border-radius: $variable;
-         -o-border-radius: $radius;
-            border-radius: $radius;
-  }
-body {
-  font: 100% $font-stack;
-  color: $primary-color;
-  #table {
-    display: grid;
-    width: $variable + 5px + (10px / 2) * 3;
-    @include border-radius(10px,20px);
-  }
-}
-@mixin flexible () {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-#flex{
-displat:flex;
-@include flexible();
-}
+              .stripe {
+                background-color: black;
+                color: white;
+                }
+
+
+            }
+
+       }
+
+    div {
+        display: flex;
+        div2 {
+         display:grid;
+         @include zebra();
+        }
+       }
+       div3 {
+        display: flex;
+        div4 {
+         display:grid;
+        }
+       }
 
             </textarea>
         </div>
@@ -73,7 +71,7 @@ displat:flex;
     document.querySelector("button").addEventListener('click', () => {
         css.value = scssCompiler.compile(scss.value);
     }, false);
-    document.querySelector('#scss').addEventListener('keydown', function(e) {
+    document.querySelector('#scss').addEventListener('keydown', function (e) {
         if (e.key == 'Tab') {
             e.preventDefault();
             var start = this.selectionStart;
