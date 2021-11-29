@@ -27,15 +27,13 @@
 $data: true;
     @mixin zebra() {
             @for $i from 1 through 7 {
-
+                 @if ($data) {
               .stripe {
                 background-color: black;
                 color: white;
                 }
-
-
+                }
             }
-
        }
 
     div {
@@ -43,12 +41,6 @@ $data: true;
         div2 {
          display:grid;
          @include zebra();
-        }
-       }
-       div3 {
-        display: flex;
-        div4 {
-         display:grid;
         }
        }
 
