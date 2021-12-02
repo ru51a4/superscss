@@ -43,10 +43,22 @@ div {
   display: flex;
   div2 {
     display: grid;
+     #table {
+                display:grid;
+    }
     @include zebra();
   }
 }
+@mixin flexible () {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
+.centered-elements {
+    @include flexible ();
+    border: 1px solid gray;
+  }
             </textarea>
         </div>
         <div class="col-6">
