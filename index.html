@@ -25,24 +25,27 @@
         <div class="col-6">
             <textarea id="scss" class="form-control" rows="20" aria-label="scss">
 $data: true;
-    @mixin zebra() {
-            @for $i from 1 through 7 {
-                 @if ($data) {
-              .stripe {
-                background-color: black;
-                color: white;
-                }
-                }
-            }
-       }
-
-    div {
-        display: flex;
-        div2 {
-         display:grid;
-         @include zebra();
+$color: #ff0000;
+@mixin zebra() {
+  @for $i from 1 through 7 {
+    @for $j from 1 through 3 {
+      @if ($data) {
+        .stripe {
+          background-color: black;
+          color: $color;
+          width: 5px + (10px / 2) * 3;
         }
-       }
+      }
+    }
+  }
+}
+div {
+  display: flex;
+  div2 {
+    display: grid;
+    @include zebra();
+  }
+}
 
             </textarea>
         </div>
