@@ -4,6 +4,7 @@
           integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <script src="lib/helpers/math.js"></script>
     <script src="lib/helpers/conditions.js"></script>
+    <script src="lib/helpers/interpalation.js"></script>
     <script src="./lib/scss.js"></script>
     <title>scss compiler</title>
 </head>
@@ -25,14 +26,19 @@
     <div class="row mt-5">
         <div class="col-6">
             <textarea id="scss" class="form-control" rows="20" aria-label="scss">
-@mixin border-radius($radius,$kek) {
-    -webkit-border-radius: $radius;
-       -moz-border-radius: $radius;
-        -ms-border-radius: $radius;
-         -o-border-radius: $radius;
-            border-radius: $kek;
+$i: 1;
+@mixin zebra() {
+    @for $i from 1 through 7 {
+            .stripe-#{$i} {
+                background-color: black;
+                color: white;
+          }
+      }
   }
-.box { @include border-radius(10px,20px); }
+div {
+  @include zebra();
+  text-align: center;
+   }
             </textarea>
         </div>
         <div class="col-6">
