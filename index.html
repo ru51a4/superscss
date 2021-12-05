@@ -25,41 +25,14 @@
     <div class="row mt-5">
         <div class="col-6">
             <textarea id="scss" class="form-control" rows="20" aria-label="scss">
-$data: true;
-$color: #ff0000;
-@mixin zebra() {
-  @for $i from 1 through 7 {
-    @for $j from 1 through 3 {
-      @if (2 < 3) {
-        .stripe {
-          background-color: black;
-          color: $color;
-          width: 5px + (10px / 2) * 3;
-        }
-      }
-    }
+@mixin border-radius($radius,$kek) {
+    -webkit-border-radius: $radius;
+       -moz-border-radius: $radius;
+        -ms-border-radius: $radius;
+         -o-border-radius: $radius;
+            border-radius: $kek;
   }
-}
-div {
-  display: flex;
-  div2 {
-    display: grid;
-     #table {
-                display:grid;
-    }
-    @include zebra();
-  }
-}
-@mixin flexible () {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-.centered-elements {
-    @include flexible ();
-    border: 1px solid gray;
-  }
+.box { @include border-radius(10px,20px); }
             </textarea>
         </div>
         <div class="col-6">
