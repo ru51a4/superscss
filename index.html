@@ -28,6 +28,7 @@
             <textarea id="scss" class="form-control" rows="20" aria-label="scss">
 @mixin zebra() {
     @for $i from 1 through 7 {
+  color: white;
         @if ($i % 2 == 1) {
             .stripe-#{$i} {
                 background-color: black;
@@ -40,6 +41,7 @@
   @include zebra();
   text-align: center;
 }
+
             </textarea>
         </div>
         <div class="col-6">
