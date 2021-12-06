@@ -26,14 +26,19 @@
     <div class="row mt-5">
         <div class="col-6">
             <textarea id="scss" class="form-control" rows="20" aria-label="scss">
-@mixin spacing($padding, $margin) {
-    @if ($padding > $margin) {
-        padding: $padding;
+@mixin zebra() {
+    @for $i from 1 through 7 {
+        @if ($i % 2 == 1) {
+            .stripe-#{$i} {
+                background-color: black;
+                color: white;
+            }
+        }
     }
 }
-
-.container {
-    @include spacing(10px, 20px);
+* {
+  @include zebra();
+  text-align: center;
 }
             </textarea>
         </div>
