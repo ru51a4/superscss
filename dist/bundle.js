@@ -1,3 +1,219 @@
+(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+class args {
+    static lex(str) {
+        //@mixin spacing($padding, $margin) {
+        let res = [];
+        let t = '';
+        let isType = false;
+        for (let i = 0; i <= str.length - 1; i++) {
+            if (str[i] === "@") {
+                isType = true;
+            } else if (isType && str[i] === " ") {
+                isType = false;
+                if (t) {
+                    res.push(t.trim());
+                }
+                t = "";
+            } else if (!isType && (str[i] === "(" || str[i] === ",") || str[i] === ")") {
+                if (t) {
+                    res.push(t.trim());
+                }
+                t = "";
+            } else {
+                t += str[i];
+            }
+        }
+        if (t) {
+            res.push(t.trim());
+        }
+        return res;
+    }
+}
+
+module.exports = args;
+
+},{}],2:[function(require,module,exports){
+class interpalation {
+    static lex(str) {
+        let res = [];
+        let t = '';
+        for (let i = 0; i <= str.length - 1; i++) {
+            if (str[i] === "#" && str[i + 1] == "{") {
+                res.push(t.trim());
+                t = "";
+                i = i + 1;
+            } else if (str[i] === "}") {
+                res.push(t.trim());
+                t = "";
+            } else {
+                t += str[i];
+            }
+        }
+        if (t) {
+            res.push(t);
+        }
+        return res;
+    }
+}
+
+module.exports = interpalation;
+
+},{}],3:[function(require,module,exports){
+class math {
+    static lex(str) {
+        let res = [];
+        let t = '';
+        for (let i = 0; i <= str.length - 1; i++) {
+            if (str[i] === ' ') {
+                continue
+            }
+            if (str[i] === '%' || str[i] === '/' || str[i] === '*' || str[i] === '-' || str[i] === '+' || str[i] === '(' || str[i] === ')') {
+                if (t) {
+                    res.push(t);
+                }
+                res.push(str[i]);
+                t = '';
+            } else if ((str[i] === ">" && str[i + 1] === "=") || (str[i] === "<" && str[i + 1] === "=")
+                || (str[i] === "=" && str[i + 1] === "=")) {
+                if (t) {
+                    res.push(t);
+                }
+                res.push(str[i] + str[i + 1]);
+                t = '';
+                i = i + 1;
+            } else if (str[i] === '<' || str[i] === '>' || str[i] === '(' || str[i] === ')') {
+                if (t) {
+                    res.push(t);
+                }
+                res.push(str[i]);
+                t = '';
+            } else {
+                t += str[i];
+            }
+        }
+        if (t) {
+            res.push(t);
+        }
+        return res;
+    }
+
+    static calc(str) {
+        let currentUnit = '';
+        let stack = [];
+        stack.push([]);
+        //build AST
+        while (str.length) {
+            let item = str.shift();
+            if (item === "(") {
+                stack.push([]);
+            } else if (item === ")") {
+                let t = stack[stack.length - 1];
+                stack.pop();
+                stack[stack.length - 1].push(t);
+            } else {
+                if (item.includes("rem")) {
+                    currentUnit = 'rem';
+                    item = item.substring(0, item.length - 3)
+                } else if (item.includes("px")) {
+                    currentUnit = 'px';
+                    item = item.substring(0, item.length - 2)
+                } else if (item.includes("em")) {
+                    currentUnit = 'em';
+                    item = item.substring(0, item.length - 2)
+                } else if (item.includes("%") && item.length > 1) {
+                    currentUnit = '%';
+                    item = item.substring(0, item.length - 1)
+                }
+                stack[stack.length - 1].push(item);
+            }
+        }
+
+        //calc
+        let start = stack[0];
+        let operators = [];
+        operators["+"] = (a, b) => {
+            return parseInt(a) + parseInt(b);
+        }
+        operators["-"] = (a, b) => {
+            return parseInt(a) - parseInt(b);
+        }
+        operators["*"] = (a, b) => {
+            return parseInt(a) * parseInt(b);
+        }
+        operators["/"] = (a, b) => {
+            return parseInt(a) / parseInt(b);
+        }
+        operators[">"] = (a, b) => {
+            return parseInt(a) > parseInt(b);
+        }
+        operators[">="] = (a, b) => {
+            return parseInt(a) >= parseInt(b);
+        }
+        operators["<="] = (a, b) => {
+            return parseInt(a) <= parseInt(b);
+        }
+        operators["<"] = (a, b) => {
+            return parseInt(a) < parseInt(b);
+        }
+        operators["=="] = (a, b) => {
+            return parseInt(a) === parseInt(b);
+        }
+        operators["%"] = (a, b) => {
+            return parseInt(a) % parseInt(b);
+        }
+
+
+        function calc(arr) {
+            for (let i = 0; i <= arr.length - 1; i++) {
+                if (arr[i] === "*" || arr[i] === "/") {
+                    let t = operators[arr[i]](arr[i - 1], arr[i + 1]);
+                    arr.splice(i - 1, 3, t);
+                    i = i - 1;
+                }
+            }
+            for (let i = 0; i <= arr.length - 1; i++) {
+                if (arr[i] === "%" || arr[i] === "+" || arr[i] === "-") {
+                    let t = operators[arr[i]](arr[i - 1], arr[i + 1]);
+                    arr.splice(i - 1, 3, t);
+                    i = i - 1;
+                }
+            }
+            for (let i = 0; i <= arr.length - 1; i++) {
+                if (arr[i] === "<=" || arr[i] === ">=" || arr[i] === "==" || arr[i] === ">" || arr[i] === "<") {
+                    let t = operators[arr[i]](arr[i - 1], arr[i + 1]);
+                    arr.splice(i - 1, 3, t);
+                    i = i - 1;
+                }
+            }
+        }
+
+        function deep(arr) {
+            for (let i = 0; i <= arr.length - 1; i++) {
+                if (Array.isArray(arr[i])) {
+                    if (arr[i].length === 1) {
+                        arr[i] = arr[i][0];
+                    } else {
+                        deep(arr[i]);
+                        i = i - 1;
+                    }
+                }
+            }
+            calc(arr);
+        }
+
+        deep(start);
+        if (start[0] == false) {
+            return false
+        }
+        return start[0] + currentUnit;
+    }
+
+}
+
+module.exports = math;
+
+},{}],4:[function(require,module,exports){
+(function (global){(function (){
 const math = require("./helpers/math");
 const args = require("./helpers/args");
 const interpalation = require("./helpers/interpalation");
@@ -262,3 +478,6 @@ class scssCompiler {
 
 module.exports = scssCompiler;
 global.window.superscss = scssCompiler;
+
+}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./helpers/args":1,"./helpers/interpalation":2,"./helpers/math":3}]},{},[4]);

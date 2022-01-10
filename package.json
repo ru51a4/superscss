@@ -1,0 +1,26 @@
+{
+  "name": "superscss",
+  "version": "1.0.2",
+  "description": "scss compiler",
+  "main": "./dist/bundle.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ru51a4/superscss.git"
+  },
+  "keywords": [
+    "scss",
+    "compiler"
+  ],
+  "author": "ru51a4",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ru51a4/superscss/issues"
+  },
+  "homepage": "https://github.com/ru51a4/superscss#readme"
+}
