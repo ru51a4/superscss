@@ -1,6 +1,6 @@
 {
   "name": "superscss",
-  "version": "1.0.4",
+  "version": "1.0.7",
   "description": "scss compiler",
   "main": "./lib/scss.js",
   "directories": {

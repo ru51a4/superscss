@@ -276,6 +276,9 @@ class astBuilder {
                     tType = "if"
                     let c = args.lex(t)
                     el.condition = c.filter((item, i) => i !== 0).join("");
+                } else if (t.includes("@media")) {
+                    tType = "media";
+                    tSelector = t;
                 } else {
                     if (t[0] === "&") {
                         tType = "&"
@@ -402,7 +405,6 @@ class scssCompiler {
                 for (let i = node.from; i <= node.through; i++) {
                     localVariables[node.forVar] = i;
                     node.childrens.forEach((item) => {
-                        console.log({item})
                         compile(item);
                     });
                     delete localVariables[node.forVar]
@@ -410,8 +412,18 @@ class scssCompiler {
             } else {
                 let props = [];
                 let cs;
-                currentSelector.push({str: node.selector, type: (node.type === "&") ? "&" : ""});
-                cs = currentSelector.map((item) => ((item.type === "&") ? "" : " ") + item.str).join("");
+                let countEndMediaCs = 0;
+                currentSelector.push({str: node.selector, type: (node.type)});
+                cs = currentSelector.sort((a, b) => (a.type === "media") ? -1 : 1).map((item) => {
+                    if(item.type === "$"){
+                        return item.str;
+                    }else if(item.type === "default"){
+                        return " " + item.str;
+                    }else if(item.type === "media"){
+                        countEndMediaCs++;
+                        return item.str + "{";
+                    }
+                }).join("");
                 //interpalation
                 cs = lex_getVariable(interpalation.lex, cs);
                 //
@@ -434,7 +446,7 @@ class scssCompiler {
                 }
                 //mixin bug
                 if (node.props.filter((item) => item.type !== "include").length) {
-                    tRes.push({lvl: currentSelector.length, cs: cs, props: props})
+                    tRes.push({lvl: currentSelector.length, cs: cs, props: props, countEndMediaCs})
                 }
                 node.childrens.forEach((item, i) => {
                     compile(item);
@@ -446,7 +458,6 @@ class scssCompiler {
                         iForDeleteLocalVariable = iForDeleteLocalVariable.filter((j) => j !== i);
                     }
                 });
-                //mixin logic
                 currentSelector.pop();
             }
         }
@@ -468,6 +479,9 @@ class scssCompiler {
                     return `${c[0]}:${c[1]};`
                 }).join("");
                 tStr += "}"
+                for(let i = 0; i < item.countEndMediaCs; i++){
+                    tStr += "}";
+                }
                 return tStr;
             }).join("\n"));
             tRes = [];
@@ -475,9 +489,9 @@ class scssCompiler {
         return res.join("\n");
     }
 }
+global.window.superscss = scssCompiler;
 
 module.exports = scssCompiler;
-global.window.superscss = scssCompiler;
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./helpers/args":1,"./helpers/interpalation":2,"./helpers/math":3}]},{},[4]);
