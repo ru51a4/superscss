@@ -213,7 +213,6 @@ class math {
 module.exports = math;
 
 },{}],4:[function(require,module,exports){
-(function (global){(function (){
 const math = require("./helpers/math");
 const args = require("./helpers/args");
 const interpalation = require("./helpers/interpalation");
@@ -415,7 +414,7 @@ class scssCompiler {
                 let countEndMediaCs = 0;
                 currentSelector.push({str: node.selector, type: (node.type)});
                 cs = currentSelector.sort((a, b) => (a.type === "media") ? -1 : 1).map((item) => {
-                    if(item.type === "$"){
+                    if(item.type === "&"){
                         return item.str;
                     }else if(item.type === "default"){
                         return " " + item.str;
@@ -489,9 +488,7 @@ class scssCompiler {
         return res.join("\n");
     }
 }
-global.window.superscss = scssCompiler;
 
 module.exports = scssCompiler;
 
-}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./helpers/args":1,"./helpers/interpalation":2,"./helpers/math":3}]},{},[4]);
