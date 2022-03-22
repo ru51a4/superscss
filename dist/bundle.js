@@ -213,6 +213,7 @@ class math {
 module.exports = math;
 
 },{}],4:[function(require,module,exports){
+(function (global){(function (){
 const math = require("./helpers/math");
 const args = require("./helpers/args");
 const interpalation = require("./helpers/interpalation");
@@ -414,11 +415,11 @@ class scssCompiler {
                 let countEndMediaCs = 0;
                 currentSelector.push({str: node.selector, type: (node.type)});
                 cs = currentSelector.sort((a, b) => (a.type === "media") ? -1 : 1).map((item) => {
-                    if(item.type === "&"){
+                    if (item.type === "&") {
                         return item.str;
-                    }else if(item.type === "default"){
+                    } else if (item.type === "default") {
                         return " " + item.str;
-                    }else if(item.type === "media"){
+                    } else if (item.type === "media") {
                         countEndMediaCs++;
                         return item.str + "{";
                     }
@@ -443,10 +444,18 @@ class scssCompiler {
                         props.push(node.props[i].value);
                     }
                 }
-                //mixin bug
-                if (node.props.filter((item) => item.type !== "include").length) {
-                    tRes.push({lvl: currentSelector.length, cs: cs, props: props, countEndMediaCs})
-                }
+                props = props.map((nodeProp) => {
+                    let c = nodeProp.split(":");
+                    c[0] = c[0].trim();
+                    c[1] = c[1].trim();
+                    //interpalation
+                    c[1] = lex_getVariable(interpalation.lex, c[1])
+                    if (isOperation(c[1])) {
+                        c[1] = math.calc(math.lex(c[1]))
+                    }
+                    return `${c[0]}:${c[1]};`
+                })
+                tRes.push({lvl: currentSelector.length, cs: cs, props: props, countEndMediaCs})
                 node.childrens.forEach((item, i) => {
                     compile(item);
                     //args
@@ -466,19 +475,9 @@ class scssCompiler {
                 let tStr = "";
                 tStr += item.cs;
                 tStr += "{"
-                tStr += item.props.map((nodeProp) => {
-                    let c = nodeProp.split(":");
-                    c[0] = c[0].trim();
-                    c[1] = c[1].trim();
-                    //interpalation
-                    c[1] = lex_getVariable(interpalation.lex, c[1])
-                    if (isOperation(c[1])) {
-                        c[1] = math.calc(math.lex(c[1]))
-                    }
-                    return `${c[0]}:${c[1]};`
-                }).join("");
+                tStr += item.props.join("");
                 tStr += "}"
-                for(let i = 0; i < item.countEndMediaCs; i++){
+                for (let i = 0; i < item.countEndMediaCs; i++) {
                     tStr += "}";
                 }
                 return tStr;
@@ -488,7 +487,9 @@ class scssCompiler {
         return res.join("\n");
     }
 }
+global.window.superscss = scssCompiler;
 
 module.exports = scssCompiler;
 
+}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./helpers/args":1,"./helpers/interpalation":2,"./helpers/math":3}]},{},[4]);
