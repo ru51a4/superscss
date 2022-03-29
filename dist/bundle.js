@@ -453,9 +453,11 @@ class scssCompiler {
                     if (isOperation(c[1])) {
                         c[1] = math.calc(math.lex(c[1]))
                     }
-                    return `${c[0]}:${c[1]};`
+                    return `${c[0]}:${c[1]}`
                 })
-                tRes.push({lvl: currentSelector.length, cs: cs, props: props, countEndMediaCs})
+                if (node.props.filter((item) => item.type !== "include").length) {
+                    tRes.push({lvl: currentSelector.length, cs: cs, props: props, countEndMediaCs})
+                }
                 node.childrens.forEach((item, i) => {
                     compile(item);
                     tRes[tRes.length - 1].props = tRes[tRes.length - 1].props.map((nodeProp) => {
@@ -467,7 +469,7 @@ class scssCompiler {
                         if (isOperation(c[1])) {
                             c[1] = math.calc(math.lex(c[1]))
                         }
-                        return `${c[0]}:${c[1]};`
+                        return `${c[0]}:${c[1]}`
                     })
                     //args
                     if (iForDeleteLocalVariable.includes(i)) {
@@ -486,7 +488,7 @@ class scssCompiler {
                 let tStr = "";
                 tStr += item.cs;
                 tStr += "{"
-                tStr += item.props.join("");
+                tStr += item.props.map((el) => el + ";").join("");
                 tStr += "}"
                 for (let i = 0; i < item.countEndMediaCs; i++) {
                     tStr += "}";
