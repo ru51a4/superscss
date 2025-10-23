@@ -1,6 +1,6 @@
 # superscss
 scss compiler  
-playground - http://superscss.surge.sh  
+playground - https://amazing-faun-79a83a.netlify.app/ 
 example:  
 ```js
 const scssCompiler = require("superscss")
